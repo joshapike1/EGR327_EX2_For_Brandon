@@ -14,30 +14,36 @@ public class HelloController {
 
     private static int id = 0;
 
-    @RequestMapping(value = "/createGreeting", method = RequestMethod.POST)
-    public Greeting createGreeting(@RequestBody String name) throws IOException {
-        try {
-            id = 1;
-            ObjectMapper mapper = new ObjectMapper();
-            Greeting greeting = new Greeting(id, name);
-            greeting.setContent(name);
-            mapper.writeValue(new File("./message.txt"), greeting);
-            return greeting;
-        } catch (IOException e) {
-            throw new IOException("Can't create or add to file!");
-        }
-    }
-
     @RequestMapping(value = "/greeting", method = RequestMethod.GET)
     public Greeting greeting() throws IOException {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String message = FileUtils.readFileToString(new File("./message.txt"), StandardCharsets.UTF_8.name());
-            Greeting greeting = mapper.readValue(message, Greeting.class);
-            return greeting;
-        } catch (IOException e) {
-            throw new IOException("You FOOL! Why would you think you could get an empty or non existent file??");
-        }
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(new File("./message.txt"), Greeting.class);
+//        try {
+//            ObjectMapper mapper = new ObjectMapper();
+//            String message = FileUtils.readFileToString(new File("./message.txt"), StandardCharsets.UTF_8.name());
+//            Greeting greeting = mapper.readValue(message, Greeting.class);
+//            return greeting;
+//        } catch (IOException e) {
+//            throw new IOException("You FOOL! Why would you think you could get an empty or non existent file??");
+//        }
+    }
+
+    @RequestMapping(value = "/createGreeting", method = RequestMethod.POST)
+    public Greeting createGreeting(@RequestBody String name) throws IOException {
+        Greeting newGreeting = new Greeting(id++, name);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(new File("./message.txt"), newGreeting);
+        return newGreeting;
+//        try {
+//            id = 1;
+//            ObjectMapper mapper = new ObjectMapper();
+//            Greeting greeting = new Greeting(id, name);
+//            greeting.setContent(name);
+//            mapper.writeValue(new File("./message.txt"), greeting);
+//            return greeting;
+//        } catch (IOException e) {
+//            throw new IOException("Can't create or add to file!");
+//        }
     }
 
     @RequestMapping(value = "/updateGreeting", method = RequestMethod.PUT)
